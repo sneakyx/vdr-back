@@ -79,6 +79,8 @@ RUN mkdir /var/run/vdradmin-am
 RUN echo 'ENABLED="1"' > /etc/default/vdradmin-am
 RUN echo 'NICE="10"' >>  /etc/default/vdradmin-am
 
+RUN echo 'ENABLED=1' > /etc/default/vdr
+
 # expose necessary ports
 EXPOSE 2004 3000 6419 8002 8008 34890 8001
 
