@@ -1,16 +1,16 @@
 # baseimage - start with Ubuntu 18.04
 FROM ubuntu:18.04
-MAINTAINER tnds82 <addons@tnds82.xyz>
+MAINTAINER sneaky <info@rothaarsystems.de>
 
 # set language
-ENV LANG pt_PT.UTF-8
-ENV LC_ALL pt_PT.UTF-8
-ENV VDR_LANG pt_PT.UTF-8
-ENV TZ Europe/Lisbon
+ENV LANG de_DE.UTF-8
+ENV LC_ALL de_DE.UTF-8
+ENV VDR_LANG de_DE.UTF-8
+ENV TZ Europe/Berlin
 
 # generate locates
 RUN apt clean && apt update && apt install -y locales gnupg
-RUN locale-gen pt_PT.UTF-8 en_US.UTF-8
+RUN locale-gen de_DE.UTF-8 en_US.UTF-8
 
 # import gpg key && copy repo
 COPY conf/yavdr-bionic.list /etc/apt/sources.list.d/
@@ -74,6 +74,10 @@ VOLUME /srv/vdr /etc/vdr /var/lib/vdr
 
 # copy startcmd
 COPY runvdr.sh /
+
+RUN mkdir /var/run/vdradmin-am
+RUN echo 'ENABLED="1"' > /etc/default/vdradmin-am
+RUN echo 'NICE="10"' >>  /etc/default/vdradmin-am
 
 # expose necessary ports
 EXPOSE 2004 3000 6419 8002 8008 34890 8001

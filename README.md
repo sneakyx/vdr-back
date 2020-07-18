@@ -32,7 +32,7 @@ VDR headless server based on the Ubuntu 18.04 image and yaVDR Ubuntu repository
 http://channelpedia.yavdr.com/gen/DVB-S/S19.2E/S19.2E_complete_sorted_by_groups.channels.conf
 
 # Run Docker image
- ```docker run --name vdr-server -it -d  --restart unless-stopped --device=/dev/dvb:/dev/dvb -v /srv/vdr/video:/srv/vdr/video -v vdr_etc:/etc/vdr -v vdr_varlib:/var/lib/vdr -p 2004:2004 -p 3000:3000 -p 6419:6419 -p 8002:8002 -p 8008:8008 -p 34890:34890 tnds82/vdr:latest```
+ ```docker run --name vdr-server -it -d  --restart unless-stopped --device=/dev/dvb:/dev/dvb -v /srv/vdr/video:/srv/vdr/video -v vdr_etc:/etc/vdr -v vdr_varlib:/var/lib/vdr -p 2004:2004 -p 3000:3000 -p 6419:6419 -p 8002:8002 -p 8008:8008 -p 8001:8001 -p 34890:34890 sneaky/vdr:latest```
 
 ### where:
 - ```/srv/vdr/videos``` is the recordings directory
