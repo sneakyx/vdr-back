@@ -42,7 +42,8 @@ RUN  apt-get install -y \
   vdr-plugin-femon \
   vdr-plugin-svdrpservice \
   vdr-plugin-svdrposd \
-  vdr-plugin-svdrpext
+  vdr-plugin-svdrpext \
+  vdradmin-am
 
 
 #wirbelscancontrol
@@ -75,7 +76,7 @@ VOLUME /srv/vdr /etc/vdr /var/lib/vdr
 COPY runvdr.sh /
 
 # expose necessary ports
-EXPOSE 2004 3000 6419 8002 8008 34890
+EXPOSE 2004 3000 6419 8002 8008 34890 8001
 
 USER vdr
 
