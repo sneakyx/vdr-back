@@ -63,9 +63,11 @@ RUN  apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # set permissions
-RUN \
-  chown -R vdr:vdr /etc/vdr /var/lib/vdr /srv/vdr
- 
+RUN chown -R vdr:vdr /etc/vdr /var/lib/vdr /srv/vdr
+
+RUN mkdir /etc/drafts
+COPY conf/ /etc/drafts
+
 ENV HOME /var/lib/vdr
 WORKDIR /var/lib/vdr
 
