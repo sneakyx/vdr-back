@@ -10,6 +10,8 @@ ENV TZ Europe/Berlin
 
 # generate locates
 RUN apt clean && apt update && apt install -y locales gnupg
+RUN apt-get install -y tzdata
+
 RUN locale-gen de_DE.UTF-8 en_US.UTF-8
 
 # import gpg key && copy repo
