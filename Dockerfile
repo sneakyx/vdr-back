@@ -58,6 +58,8 @@ RUN cd /tmp &&\
 COPY conf/vdr/* /var/lib/vdr/
 
 # copy vdr plugin configs
+# for restful API
+RUN echo "-P restfulapi -p 8002" > /etc/vdr/conf.d/50-restfulapi.conf
 COPY conf/plugins/* /etc/vdr/plugins/
 
 # clean apt leftovers
