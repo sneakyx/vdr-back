@@ -40,16 +40,13 @@ LABEL org.opencontainers.image.title="sneaky/vdr" \
 # (VDR then aborted with "libvdr-svdrposd.so.2.6.9: cannot open shared object
 # file"). Without VDRDIR, the Makefiles fall back to plain "pkg-config vdr",
 # which finds Debian's vdr.pc with correct libdir/apiversion.
-# UTF-8 locale: VDR takes its "system character table" from the locale
-# (nl_langinfo(CODESET) in vdr.c). Without any locale the codeset is plain
-# ASCII and every umlaut in EPG/SVDRP/plugin output degenerates to '?'.
-# NOTE: --chartab in runvdr.sh only affects DVB stream strings WITHOUT a
-# table indicator - it does NOT replace the locale!
+#
+# LANG must be UTF-8 (see locale generation below the base layer): VDR takes
+# its "system character table" from the locale (nl_langinfo(CODESET) in vdr.c).
+# Without a locale the codeset is plain ASCII and every umlaut in EPG/SVDRP
+# degenerates to '?'.
 ENV TZ=Europe/Berlin \
     LANG=de_DE.UTF-8
-
-RUN sed -i 's/^# *de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen && \
-    locale-gen
 
 # -----------------------------------------------------------------------------
 # Base system + VDR 2.6.9 + Debian plugins
@@ -67,6 +64,16 @@ RUN apt-get update && \
       libmagick++-dev \
       libtntnet-dev libcxxtools-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# -----------------------------------------------------------------------------
+# UTF-8 locale: MUST come after the base layer - the "locales" package
+# provides /etc/locale.gen and /usr/sbin/locale-gen!
+# Generating de_DE.UTF-8 puts VDR into UTF-8 mode. --chartab in runvdr.sh only
+# affects DVB stream strings WITHOUT a table indicator, it does NOT replace
+# the locale.
+# -----------------------------------------------------------------------------
+RUN echo 'de_DE.UTF-8 UTF-8' >> /etc/locale.gen && \
+    locale-gen
 
 # -----------------------------------------------------------------------------
 # Directories (contract with volume mounts)
