@@ -1,5 +1,0 @@
-deb http://ppa.launchpad.net/aap/vdr/ubuntu bionic main 
-deb-src http://ppa.launchpad.net/aap/vdr/ubuntu bionic main
-
-deb http://ppa.launchpad.net/yavdr/experimental-vdr/ubuntu bionic main 
-deb-src http://ppa.launchpad.net/yavdr/experimental-vdr/ubuntu bionic main 
