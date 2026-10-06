@@ -3,14 +3,24 @@ name: Build and push VDR image
 
 on:
   push:
-    branches: [ 2.6 ]
+    # No branches filter: the workflow runs on EVERY branch.
+    # The branch name (sanitized) becomes the Docker tag.
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Guard: a branch called "latest" must never overwrite the
+    # rollback image sneaky/vdr:latest (the old VDR 2.4.0)!
+    if: github.ref_name != 'latest'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Derive Docker tag from branch name
+        id: tag
+        run: |
+          TAG=$(echo "$GITHUB_REF_NAME" | sed -E 's#[^a-zA-Z0-9._-]+#-#g' | tr '[:upper:]' '[:lower:]')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -26,7 +36,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            sneaky/vdr:2.6
+          tags: sneaky/vdr:${{ steps.tag.outputs.tag }}
           build-args: |
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
