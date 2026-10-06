@@ -40,7 +40,16 @@ LABEL org.opencontainers.image.title="sneaky/vdr" \
 # (VDR then aborted with "libvdr-svdrposd.so.2.6.9: cannot open shared object
 # file"). Without VDRDIR, the Makefiles fall back to plain "pkg-config vdr",
 # which finds Debian's vdr.pc with correct libdir/apiversion.
-ENV TZ=Europe/Berlin
+# UTF-8 locale: VDR takes its "system character table" from the locale
+# (nl_langinfo(CODESET) in vdr.c). Without any locale the codeset is plain
+# ASCII and every umlaut in EPG/SVDRP/plugin output degenerates to '?'.
+# NOTE: --chartab in runvdr.sh only affects DVB stream strings WITHOUT a
+# table indicator - it does NOT replace the locale!
+ENV TZ=Europe/Berlin \
+    LANG=de_DE.UTF-8
+
+RUN sed -i 's/^# *de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen
 
 # -----------------------------------------------------------------------------
 # Base system + VDR 2.6.9 + Debian plugins
@@ -49,7 +58,7 @@ ENV TZ=Europe/Berlin
 # -----------------------------------------------------------------------------
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      ca-certificates curl git build-essential pkg-config tzdata \
+      ca-certificates curl git build-essential pkg-config tzdata locales \
       vdr vdr-dev \
       vdr-plugin-epgsearch \
       vdr-plugin-streamdev-server \
