@@ -32,9 +32,15 @@ LABEL org.opencontainers.image.title="sneaky/vdr" \
       org.opencontainers.image.created="${BUILD_DATE}" \
       maintainer="sneaky"
 
-ENV TZ=Europe/Berlin \
-    VDRDIR=/usr/include/vdr \
-    LIBDIR=/usr/lib/vdr
+# NOTE: deliberately NO VDRDIR/LIBDIR env vars here! Debian's vdr-dev installs
+# vdr.pc to /usr/lib/x86_64-linux-gnu/pkgconfig/ (NOT /usr/include/vdr/).
+# The plugin Makefiles query "$(VDRDIR)/vdr.pc" whenever VDRDIR is set, which
+# made LIBDIR/APIVERSION empty -> all source-built plugins were installed as
+# "/libvdr-*.so." at the filesystem root instead of /usr/lib/vdr/plugins/*.so.2.6.9
+# (VDR then aborted with "libvdr-svdrposd.so.2.6.9: cannot open shared object
+# file"). Without VDRDIR, the Makefiles fall back to plain "pkg-config vdr",
+# which finds Debian's vdr.pc with correct libdir/apiversion.
+ENV TZ=Europe/Berlin
 
 # -----------------------------------------------------------------------------
 # Base system + VDR 2.6.9 + Debian plugins
@@ -76,7 +82,8 @@ COPY conf/ /etc/drafts
 
 # -----------------------------------------------------------------------------
 # Source builds: Plugins without (matching) Debian package
-# Standard VDR plugin build: make && make install (VDRDIR/LIBDIR from ENV above).
+# Standard VDR plugin build: make && make install (paths + API version come
+# from Debian's vdr.pc via plain pkg-config - do not set VDRDIR/LIBDIR).
 # If make reports a missing header: add the corresponding -dev package above
 # in apt-get and rebuild (dependencies see respective repo).
 # -----------------------------------------------------------------------------
